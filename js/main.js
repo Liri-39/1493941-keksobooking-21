@@ -30,10 +30,28 @@ const OFFERS = {
   CHECKTIME: [`12:00`, `13:00`, `14:00`]
 };
 const TYPES = {
-  house: [`дом`, 5000],
-  flat: [`квартира`, 1000],
-  palace: [`дворец`, 10000],
-  bungalow: [`бунгало`, 0]
+  house: {
+    name: `дом`,
+    minprice: 5000
+  },
+  flat: {
+    name: `квартира`,
+    minprice: 1000
+  },
+  palace: {
+    name: `дворец`,
+    minprice: 10000
+  },
+  bungalow: {
+    name: `бунгало`,
+    minprice: 0
+  }
+};
+const CAPACITY = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0],
 };
 const randomValue = function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -93,74 +111,44 @@ for (let i = 0; i < MOCKS_LENGTH; i++) {
 }
 
 /* валидация формы*/
-// валидация заголовка
-titleInput.addEventListener(`input`, function () {
-  let valueLength = titleInput.value.length;
-
-  if (valueLength < MIN_NAME_LENGTH) {
-    titleInput.setCustomValidity(`Еще ${MIN_NAME_LENGTH - valueLength} знаков`);
-  } else if (valueLength > MAX_NAME_LENGTH) {
-    titleInput.setCustomValidity(`Удалите ${MAX_NAME_LENGTH - valueLength} знаков`);
-  } else {
-    titleInput.setCustomValidity(``);
-  }
-
-  titleInput.reportValidity();
-});
-// валидация цены в соответствии с типом
-
-priceInput.addEventListener(`input`, function () {
-
-  if (priceInput.value < TYPES[typeInput.value][1]) {
-    priceInput.setCustomValidity(`Для выбранного типа жилья цена не может быть меньше ${TYPES[typeInput.value][1]}`);
-  } else if (priceInput.value > priceInput.max) {
-    priceInput.setCustomValidity(`Цена не может быть больше ${priceInput.max}`);
-  } else {
-    priceInput.setCustomValidity(``);
-  }
-
-  priceInput.reportValidity();
-});
+// задаем ограничения по количеству символов для заголовка
+titleInput.min = MIN_NAME_LENGTH;
+titleInput.max = MAX_NAME_LENGTH;
 
 // меняем плейсхолдер у цены в соответствии с типом
 typeInput.addEventListener(`input`, function () {
-  priceInput.min = TYPES[typeInput.value][1];
-  priceInput.placeholder = TYPES[typeInput.value][1];
+  priceInput.min = TYPES[typeInput.value].minprice;
+  priceInput.placeholder = TYPES[typeInput.value].minprice;
 });
-priceInput.placeholder = TYPES[typeInput.value][1];
+priceInput.placeholder = TYPES[typeInput.value].minprice;
+priceInput.min = TYPES[typeInput.value].minprice;
 
 // меняем время выезда/заезда
 
+const setEqualValue = function (firstElement, secondElement) {
+  secondElement.value = firstElement.value;
+};
+
 timeinSelect.addEventListener(`input`, function () {
-  timeoutSelect.value = timeinSelect.value;
+  setEqualValue(timeinSelect, timeoutSelect);
 });
 timeoutSelect.addEventListener(`input`, function () {
-  timeinSelect.value = timeoutSelect.value;
+  setEqualValue(timeoutSelect, timeinSelect);
 });
 
 // меняем количество комнат/гостей
-if (roomNumberSelect.value === 100) {
-  capacitySelect.value = 0;
-} else {
-  capacitySelect.value = roomNumberSelect.value;
-}
-roomNumberSelect.addEventListener(`input`, function () {
+const setDisableOptions = function () {
+  capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
   const capacityOptions = capacitySelect.querySelectorAll(`option`);
   capacityOptions.forEach(function (option) {
-
-    if (((Number(option.value) > Number(roomNumberSelect.value))) ||
-      ((Number(option.value) === 0) && Number(roomNumberSelect.value) !== 100) ||
-      ((Number(option.value) > 0) && Number(roomNumberSelect.value) === 100)) {
-      option.setAttribute(`disabled`, `disabled`);
-    } else if ((Number(option.value) <= Number(roomNumberSelect.value)) || (Number(roomNumberSelect.value) === 100)) {
-      option.removeAttribute(`disabled`, `disabled`);
-    }
+    option.disabled = !CAPACITY[roomNumberSelect.value].includes(Number(option.value));
   });
-  if ((Number(capacitySelect.value) > Number(roomNumberSelect.value)) || (Number(capacitySelect.value) === 0 && Number(roomNumberSelect.value) !== 100)) {
-    capacitySelect.style = `outline: 2px solid red`;
-  } else {
-    capacitySelect.removeAttribute(`style`);
-  }
+};
+
+capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
+setDisableOptions();
+roomNumberSelect.addEventListener(`input`, function () {
+  setDisableOptions();
 });
 
 /* создание карты объявления*/
@@ -174,7 +162,7 @@ const renderCard = function (card) {
   cardElement.querySelector(`.popup__title`).textContent = `${offer.title}`;
   cardElement.querySelector(`.popup__text--address`).textContent = `${offer.address}`;
   cardElement.querySelector(`.popup__text--price`).textContent = `${offer.price}₽/ночь`;
-  cardElement.querySelector(`.popup__type`).textContent = TYPES[offer.type][0];
+  cardElement.querySelector(`.popup__type`).textContent = TYPES[offer.type][name];
   cardElement.querySelector(`.popup__text--capacity`).textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
   cardElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
 
@@ -222,12 +210,12 @@ const renderPin = function (pin) {
 /* неактивное состояние */
 
 allFormFieldset.forEach(function (fieldset) {
-  fieldset.setAttribute(`disabled`, `disabled`);
+  fieldset.disabled = true;
 });
 allFilterSelect.forEach(function (select) {
-  select.setAttribute(`disabled`, `disabled`);
+  select.disabled = true;
 });
-filter.querySelector(`fieldset`).setAttribute(`disabled`, `disabled`);
+filter.querySelector(`fieldset`).disabled = true;
 
 /* установка координат в неактивном состоянии*/
 
@@ -242,12 +230,12 @@ form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.rou
 const formActivateHandler = function () {
   map.classList.remove(`map--faded`);
   form.classList.remove(`ad-form--disabled`);
-  filter.querySelector(`fieldset`).removeAttribute(`disabled`, `disabled`);
+  filter.querySelector(`fieldset`).disabled = false;
   allFormFieldset.forEach(function (fieldset) {
-    fieldset.removeAttribute(`disabled`, `disabled`);
+    fieldset.disabled = false;
   });
   allFilterSelect.forEach(function (select) {
-    select.removeAttribute(`disabled`, `disabled`);
+    select.disabled = false;
   });
   mocks.forEach(function (mock) {
     fragment.appendChild(renderPin(mock));
