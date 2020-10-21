@@ -14,7 +14,6 @@ const filter = document.querySelector(`.map__filters-container`);
 const form = document.querySelector(`.ad-form`);
 const allFormFieldset = form.querySelectorAll(`fieldset`);
 const allFilterSelect = filter.querySelectorAll(`select`);
-const titleInput = form.querySelector(`#title`);
 const priceInput = form.querySelector(`#price`);
 const typeInput = form.querySelector(`#type`);
 const timeoutSelect = form.querySelector(`#timeout`);
@@ -223,12 +222,7 @@ const startCoords = {
 };
 form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.round(startCoords.y)}`;
 
-/*const escapePressHandler = function (evt) {
-  if (evt.key === `Escape`) {
-    closePopup();
-  }
-};*/
-const escapePressHandler = function (evt){
+const escapePressHandler = function (evt) {
   if (evt.key === `Escape`) {
     closePopup();
   }
