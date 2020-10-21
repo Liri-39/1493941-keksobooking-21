@@ -7,10 +7,8 @@ const MIN_VALUE_Y = 130;
 const MAX_VALUE_ARRAY = 10;
 const PIN_WIDTH = 50;
 const PIN_HEIGHT = 70;
-const MIN_NAME_LENGTH = 30;
-const MAX_NAME_LENGTH = 100;
 const map = document.querySelector(`.map`);
-const mainPin = document.querySelector(`.map__pin--main`);
+const mainPin = map.querySelector(`.map__pin--main`);
 const mocks = [];
 const filter = document.querySelector(`.map__filters-container`);
 const form = document.querySelector(`.ad-form`);
@@ -111,9 +109,6 @@ for (let i = 0; i < MOCKS_LENGTH; i++) {
 }
 
 /* валидация формы*/
-// задаем ограничения по количеству символов для заголовка
-titleInput.min = MIN_NAME_LENGTH;
-titleInput.max = MAX_NAME_LENGTH;
 
 // меняем плейсхолдер у цены в соответствии с типом
 typeInput.addEventListener(`input`, function () {
@@ -156,6 +151,7 @@ roomNumberSelect.addEventListener(`input`, function () {
 const renderCard = function (card) {
   const cardElement = cardTemplate.cloneNode(true);
   const offer = card.offer;
+  const location = card.location;
   const author = card.author;
   const featuresArray = offer.features;
   const photosArray = offer.photos;
@@ -189,6 +185,8 @@ const renderCard = function (card) {
   }
 
   cardElement.querySelector(`.popup__avatar`).src = `${author.avatar}`;
+  cardElement.style = `left: ${location.x}px; top: ${location.y}px;`;
+
   return cardElement;
 };
 
@@ -225,12 +223,46 @@ const startCoords = {
 };
 form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.round(startCoords.y)}`;
 
-/* активация */
+/*const escapePressHandler = function (evt) {
+  if (evt.key === `Escape`) {
+    closePopup();
+  }
+};*/
+const escapePressHandler = function (evt){
+  if (evt.key === `Escape`) {
+    closePopup();
+  }
+};
+const buttonClickHandler = function () {
+  closePopup();
+};
 
+const showCard = function (pin) {
+  const activeCard = document.querySelector(`.popup`);
+  if (activeCard) {
+    closePopup();
+  }
+  const cardElement = renderCard(pin);
+  map.insertBefore(cardElement, filter);
+  const buttonCloseCard = map.querySelector(`.popup__close`);
+  buttonCloseCard.addEventListener(`click`, buttonClickHandler);
+  document.addEventListener(`keydown`, escapePressHandler);
+};
+
+const closePopup = function () {
+  document.removeEventListener(`keydown`, escapePressHandler);
+  const buttonCloseCard = map.querySelector(`.popup__close`);
+  buttonCloseCard.removeEventListener(`click`, buttonClickHandler);
+  const card = map.querySelector(`.popup`);
+  if (card) {
+    map.removeChild(card);
+  }
+};
+/* активация */
 const formActivateHandler = function () {
   map.classList.remove(`map--faded`);
   form.classList.remove(`ad-form--disabled`);
-  filter.querySelector(`fieldset`).disabled = false;
+
   allFormFieldset.forEach(function (fieldset) {
     fieldset.disabled = false;
   });
@@ -238,10 +270,18 @@ const formActivateHandler = function () {
     select.disabled = false;
   });
   mocks.forEach(function (mock) {
-    fragment.appendChild(renderPin(mock));
+    const pin = renderPin(mock);
+    fragment.appendChild(pin);
+    pin.addEventListener(`click`, function () {
+      showCard(mock);
+    });
+    pin.addEventListener(`keydown`, function (evt) {
+      if (evt.key === `Enter`) {
+        showCard(mock);
+      }
+    });
   });
   mapPins.appendChild(fragment);
-  map.insertBefore(renderCard(mocks[0]), filter);
 };
 
 mainPin.addEventListener(`mousedown`, function (evt) {
