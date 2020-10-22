@@ -28,7 +28,7 @@ const Keys = {
   isEscape(evt) {
     return evt.key === `Escape`;
   },
-}
+};
 
 const OFFERS = {
   ROOMS: [`palace`, `flat`, `house`, `bungalow`],
@@ -159,7 +159,6 @@ roomNumberSelect.addEventListener(`input`, function () {
 const renderCard = function (card) {
   const cardElement = cardTemplate.cloneNode(true);
   const offer = card.offer;
-  const location = card.location;
   const author = card.author;
   const featuresArray = offer.features;
   const photosArray = offer.photos;
