@@ -21,6 +21,15 @@ const timeinSelect = form.querySelector(`#timein`);
 const roomNumberSelect = form.querySelector(`#room_number`);
 const capacitySelect = form.querySelector(`#capacity`);
 
+const Keys = {
+  isEnter(evt) {
+    return evt.key === `Enter`;
+  },
+  isEscape(evt) {
+    return evt.key === `Escape`;
+  },
+}
+
 const OFFERS = {
   ROOMS: [`palace`, `flat`, `house`, `bungalow`],
   FEATURES: [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`],
@@ -184,7 +193,6 @@ const renderCard = function (card) {
   }
 
   cardElement.querySelector(`.popup__avatar`).src = `${author.avatar}`;
-  cardElement.style = `left: ${location.x}px; top: ${location.y}px;`;
 
   return cardElement;
 };
@@ -223,7 +231,7 @@ const startCoords = {
 form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.round(startCoords.y)}`;
 
 const escapePressHandler = function (evt) {
-  if (evt.key === `Escape`) {
+  if (Keys.isEscape(evt)) {
     closePopup();
   }
 };
@@ -270,7 +278,7 @@ const formActivateHandler = function () {
       showCard(mock);
     });
     pin.addEventListener(`keydown`, function (evt) {
-      if (evt.key === `Enter`) {
+      if (Keys.isEnter(evt)) {
         showCard(mock);
       }
     });
@@ -284,7 +292,7 @@ mainPin.addEventListener(`mousedown`, function (evt) {
   }
 });
 mainPin.addEventListener(`keydown`, function (evt) {
-  if (evt.key === `Enter`) {
+  if (Keys.isEnter(evt)) {
     formActivateHandler();
   }
 });
