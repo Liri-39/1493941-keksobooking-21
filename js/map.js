@@ -22,7 +22,7 @@
     if (activeCard) {
       closePopup();
     }
-    const cardElement = card.renderCard(pin);
+    const cardElement = window.card.renderCard(pin);
     map.insertBefore(cardElement, filter);
     const buttonCloseCard = map.querySelector(`.popup__close`);
     buttonCloseCard.addEventListener(`click`, buttonClickHandler);
@@ -31,8 +31,8 @@
 
   // отрисовывает метки
   const showPins = function () {
-    data.mocks.forEach(function (mock) {
-      const pin = pins.renderPin(mock);
+    window.data.mocks.forEach(function (mock) {
+      const pin = window.pins.renderPin(mock);
       fragment.appendChild(pin);
       pin.addEventListener(`click`, function () {
         showCard(mock);

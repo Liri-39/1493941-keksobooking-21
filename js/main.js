@@ -3,15 +3,15 @@
 const map = document.querySelector(`.map`);
 const mainPin = map.querySelector(`.map__pin--main`);
 
-form.formDeactivateHandler();
+window.form.formDeactivateHandler();
 
 mainPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
-    form.formActivateHandler();
+    window.form.formActivateHandler();
   }
 });
 mainPin.addEventListener(`keydown`, function (evt) {
-  if (page.Keys.isEnter(evt)) {
-    form.formActivateHandler();
+  if (window.page.Keys.isEnter(evt)) {
+    window.form.formActivateHandler();
   }
 });

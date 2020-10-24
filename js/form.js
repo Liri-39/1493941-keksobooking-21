@@ -85,7 +85,7 @@
     allFilterSelect.forEach(function (select) {
       select.disabled = false;
     });
-    page.showPins();
+    window.page.showPins();
   };
 
   // меняем плейсхолдер у цены в соответствии с типом
