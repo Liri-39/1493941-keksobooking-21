@@ -9,6 +9,7 @@ mainPin.addEventListener(`mousedown`, function (evt) {
   if (evt.button === 0) {
     window.form.formActivateHandler();
   }
+
 });
 mainPin.addEventListener(`keydown`, function (evt) {
   if (window.page.Keys.isEnter(evt)) {

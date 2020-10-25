@@ -44,10 +44,10 @@
   /* установка координат в неактивном состоянии*/
 
   const startCoords = {
-    x: mainPin.offsetTop + mainPin.offsetHeight / 2,
-    y: mainPin.offsetLeft + +mainPin.offsetWidth / 2
+    y: mainPin.offsetTop,
+    x: mainPin.offsetLeft
   };
-  form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.round(startCoords.y)}`;
+  form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth / 2)}`;
   priceInput.placeholder = TYPES[typeInput.value].minprice;
   priceInput.min = TYPES[typeInput.value].minprice;
   const setEqualValue = function (firstElement, secondElement) {
@@ -77,19 +77,16 @@
 
   // активация
   const formActivateHandler = function () {
-    /*if ((evt.button === 0) || (window.page.Keys.isEnter(evt))) {*/
-      map.classList.remove(`map--faded`);
-      form.classList.remove(`ad-form--disabled`);
-      allFormFieldset.forEach(function (fieldset) {
-        fieldset.disabled = false;
-      });
-      allFilterSelect.forEach(function (select) {
-        select.disabled = false;
-      });
-      window.page.showPins();
-     /* mainPin.removeEventListener(`mousedown`, window.form.formActivateHandler());
-      mainPin.removeEventListener(`keydown`, window.form.formActivateHandler());
-    }*/
+    form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth)}`;
+    map.classList.remove(`map--faded`);
+    form.classList.remove(`ad-form--disabled`);
+    allFormFieldset.forEach(function (fieldset) {
+      fieldset.disabled = false;
+    });
+    allFilterSelect.forEach(function (select) {
+      select.disabled = false;
+    });
+    window.page.showPins();
   };
 
   // меняем плейсхолдер у цены в соответствии с типом
