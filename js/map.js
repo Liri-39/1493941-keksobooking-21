@@ -42,6 +42,7 @@
           showCard(mock);
         }
       });
+
     });
     mapPins.appendChild(fragment);
   };

@@ -41,13 +41,15 @@
   const capacitySelect = form.querySelector(`#capacity`);
 
   // действия при загрузке страницы
-  /* установка координат в неактивное состоянии*/
+
+  /* установка координат в неактивном состоянии*/
 
   const startCoords = {
-    x: mainPin.offsetTop + mainPin.offsetHeight / 2,
-    y: mainPin.offsetLeft + +mainPin.offsetWidth / 2
+    y: mainPin.offsetTop,
+    x: mainPin.offsetLeft
   };
-  form.querySelector(`#address`).value = `${Math.round(startCoords.x)}, ${Math.round(startCoords.y)}`;
+  form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth / 2)}`;
+
   priceInput.placeholder = TYPES[typeInput.value].minprice;
   priceInput.min = TYPES[typeInput.value].minprice;
   const setEqualValue = function (firstElement, secondElement) {
@@ -77,6 +79,8 @@
 
   // активация
   const formActivateHandler = function () {
+
+    form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth)}`;
     map.classList.remove(`map--faded`);
     form.classList.remove(`ad-form--disabled`);
     allFormFieldset.forEach(function (fieldset) {
