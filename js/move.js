@@ -1,5 +1,14 @@
 'use strict';
 (function () {
+  const coordLimits = {
+    minY: 0,
+    minX: 130,
+    maxX: 630
+  };
+  const addressValue = function (x, y) {
+    const coord = `${Math.round(y + mainPin.offsetWidth / 2)}, ${Math.round(x + mainPin.offsetHeight)}`;
+    return coord;
+  };
   const map = document.querySelector(`.map`);
   const mainPin = map.querySelector(`.map__pin--main`);
   mainPin.addEventListener(`mousedown`, function (evt) {
@@ -12,7 +21,7 @@
 
     let dragged = false;
 
-    const onMouseMove = function (moveEvt) {
+    const MouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
       dragged = true;
@@ -30,29 +39,29 @@
       let coordY = mainPin.offsetLeft - shift.x;
       let coordX = mainPin.offsetTop - shift.y;
 
-      if (coordY < 0) {
-        coordY = 0;
+      if (coordY < coordLimits.minY) {
+        coordY = coordLimits.minY;
       } else if (coordY > map.offsetWidth - mainPin.offsetWidth) {
         coordY = map.offsetWidth - mainPin.offsetWidth;
       }
 
-      if (coordX < 130) {
-        coordX = 130;
-      } else if (coordX > 630) {
-        coordX = 630;
+      if (coordX < coordLimits.minX) {
+        coordX = coordLimits.minX;
+      } else if (coordX > coordLimits.maxX) {
+        coordX = coordLimits.maxX;
       }
 
       mainPin.style.left = coordY + `px`;
       mainPin.style.top = coordX + `px`;
 
-      document.querySelector(`#address`).value = `${Math.round(coordY + mainPin.offsetWidth / 2)}, ${Math.round(coordX + mainPin.offsetHeight)}`;
+      document.querySelector(`#address`).value = addressValue(coordX, coordY);
     };
 
-    const onMouseUp = function (upEvt) {
+    const MouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
 
-      document.removeEventListener(`mousemove`, onMouseMove);
-      document.removeEventListener(`mouseup`, onMouseUp);
+      document.removeEventListener(`mousemove`, MouseMoveHandler);
+      document.removeEventListener(`mouseup`, MouseUpHandler);
 
       if (dragged) {
         const onClickPreventDefault = function (clickEvt) {
@@ -62,7 +71,10 @@
         mainPin.addEventListener(`click`, onClickPreventDefault);
       }
     };
-    document.addEventListener(`mousemove`, onMouseMove);
-    document.addEventListener(`mouseup`, onMouseUp);
+    document.addEventListener(`mousemove`, MouseMoveHandler);
+    document.addEventListener(`mouseup`, MouseUpHandler);
   });
+  window.move = {
+    addressValue
+  };
 })();
