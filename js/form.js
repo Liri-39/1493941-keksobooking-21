@@ -42,7 +42,7 @@
 
   // действия при загрузке страницы
 
-  /* установка координат в неактивном состоянии*/
+  /* установка  координат в неактивном состоянии*/
 
   const startCoords = {
     y: mainPin.offsetTop,
@@ -80,7 +80,7 @@
   // активация
   const formActivateHandler = function () {
 
-    form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth)}`;
+    form.querySelector(`#address`).value = window.move.addressValue(startCoords.x, startCoords.y);
     map.classList.remove(`map--faded`);
     form.classList.remove(`ad-form--disabled`);
     allFormFieldset.forEach(function (fieldset) {

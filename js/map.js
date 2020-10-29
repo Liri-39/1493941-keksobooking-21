@@ -29,9 +29,8 @@
     document.addEventListener(`keydown`, escapePressHandler);
   };
 
-  // отрисовывает метки
-  const showPins = function () {
-    window.data.mocks.forEach(function (mock) {
+  const successHandler = function (mocks) {
+    mocks.forEach(function (mock) {
       const pin = window.pins.renderPin(mock);
       fragment.appendChild(pin);
       pin.addEventListener(`click`, function () {
@@ -42,9 +41,22 @@
           showCard(mock);
         }
       });
-
     });
     mapPins.appendChild(fragment);
+  };
+
+  const errorHandler = function (errorMessage) {
+    const node = document.createElement(`div`);
+    node.style = `z-index: 100; color: wheat;`;
+    node.style.fontSize = `30px`;
+    node.classList.add(`error`);
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
+
+  // отрисовывает метки
+  const showPins = function () {
+    window.loadData(successHandler, errorHandler);
   };
 
   const escapePressHandler = function (evt) {
