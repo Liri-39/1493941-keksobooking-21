@@ -1,23 +1,17 @@
 'use strict';
-
 (function () {
-  const StatusCode = {
-    OK: 200
-  };
-  const TIMEOUT_IN_MS = 10000;
-  const url = `https://21.javascript.pages.academy/keksobooking/data`;
-  window.loadData = function (onSuccess, onError) {
+  const URL = `https://21.javascript.pages.academy/keksobooking`;
+  const TIMEOUT_IN_MS = 1;
+  window.upload = function (data, onSuccess, onError) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
-    xhr.open(`GET`, url);
 
     xhr.addEventListener(`load`, function () {
-      if (xhr.status === StatusCode.OK) {
-        onSuccess(xhr.response);
-      } else {
-        onError(xhr.response);
-      }
+      onSuccess(xhr.response);
     });
+
+    xhr.open(`POST`, URL);
+    xhr.send(data);
 
     xhr.addEventListener(`error`, function () {
       onError(`Произошла ошибка соединения`);
@@ -27,7 +21,5 @@
     });
 
     xhr.timeout = TIMEOUT_IN_MS;
-
-    xhr.send();
   };
 })();

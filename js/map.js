@@ -29,16 +29,16 @@
     document.addEventListener(`keydown`, escapePressHandler);
   };
 
-  const successHandler = function (mocks) {
-    mocks.forEach(function (mock) {
-      const pin = window.pins.renderPin(mock);
+  const successHandler = function (objects) {
+    objects.forEach(function (object) {
+      const pin = window.pins.renderPin(object);
       fragment.appendChild(pin);
       pin.addEventListener(`click`, function () {
-        showCard(mock);
+        showCard(object);
       });
       pin.addEventListener(`keydown`, function (evt) {
         if (Keys.isEnter(evt)) {
-          showCard(mock);
+          showCard(object);
         }
       });
     });
