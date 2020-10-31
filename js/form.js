@@ -39,6 +39,7 @@
   const timeinSelect = form.querySelector(`#timein`);
   const roomNumberSelect = form.querySelector(`#room_number`);
   const capacitySelect = form.querySelector(`#capacity`);
+  const resetButton = document.querySelector(`.ad-form__reset`);
 
   // действия при загрузке страницы
 
@@ -67,6 +68,11 @@
 
   // деактивация
   const formDeactivateHandler = function () {
+    map.classList.add(`map--faded`);
+    form.classList.add(`ad-form--disabled`);
+    capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
+    setDisableOptions();
+    form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth / 2)}`;
     allFormFieldset.forEach(function (fieldset) {
       fieldset.disabled = true;
     });
@@ -76,11 +82,11 @@
     filter.querySelector(`fieldset`).disabled = true;
   };
 
+  resetButton.addEventListener(`click`, formDeactivateHandler);
 
   // активация
   const formActivateHandler = function () {
-
-    form.querySelector(`#address`).value = window.move.addressValue(startCoords.x, startCoords.y);
+    form.querySelector(`#address`).value = window.move.fillAddressValue(startCoords.x, startCoords.y);
     map.classList.remove(`map--faded`);
     form.classList.remove(`ad-form--disabled`);
     allFormFieldset.forEach(function (fieldset) {
@@ -90,6 +96,62 @@
       select.disabled = false;
     });
     window.page.showPins();
+    form.addEventListener(`submit`, function (evt) {
+      window.upload(new FormData(form), onSuccess, onError);
+      evt.preventDefault();
+    });
+  };
+
+  const onError = function () {
+    const messageTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
+    const message = messageTemplate.cloneNode(true);
+    document.body.insertAdjacentElement(`afterbegin`, message);
+
+    const errorMessage = document.querySelector(`.error`);
+
+    const escapePressHandler = function (evt) {
+      if (window.page.Keys.isEscape(evt)) {
+        document.removeEventListener(`keydown`, escapePressHandler);
+        errorMessage.remove();
+      }
+    };
+
+    document.addEventListener(`keydown`, escapePressHandler);
+
+    const clickHandler = function () {
+      document.removeEventListener(`click`, clickHandler);
+      errorMessage.remove();
+    };
+    errorMessage.addEventListener(`click`, clickHandler);
+  };
+
+  const onSuccess = function () {
+    form.reset();
+    formDeactivateHandler();
+    const pins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
+    for (let i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+    const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
+    const message = messageTemplate.cloneNode(true);
+    document.body.insertAdjacentElement(`afterbegin`, message);
+
+    const successMessage = document.querySelector(`.success`);
+
+    const escapePressHandler = function (evt) {
+      if (window.page.Keys.isEscape(evt)) {
+        document.removeEventListener(`keydown`, escapePressHandler);
+        successMessage.remove();
+      }
+    };
+
+    document.addEventListener(`keydown`, escapePressHandler);
+
+    const clickHandler = function () {
+      document.removeEventListener(`click`, clickHandler);
+      successMessage.remove();
+    };
+    successMessage.addEventListener(`click`, clickHandler);
   };
 
   // меняем плейсхолдер у цены в соответствии с типом

@@ -5,7 +5,7 @@
     minX: 130,
     maxX: 630
   };
-  const addressValue = function (x, y) {
+  const fillAddressValue = function (x, y) {
     const coord = `${Math.round(y + mainPin.offsetWidth / 2)}, ${Math.round(x + mainPin.offsetHeight)}`;
     return coord;
   };
@@ -21,7 +21,7 @@
 
     let dragged = false;
 
-    const MouseMoveHandler = function (moveEvt) {
+    const mouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
       dragged = true;
@@ -54,14 +54,14 @@
       mainPin.style.left = coordY + `px`;
       mainPin.style.top = coordX + `px`;
 
-      document.querySelector(`#address`).value = addressValue(coordX, coordY);
+      document.querySelector(`#address`).value = fillAddressValue(coordX, coordY);
     };
 
-    const MouseUpHandler = function (upEvt) {
+    const mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
 
-      document.removeEventListener(`mousemove`, MouseMoveHandler);
-      document.removeEventListener(`mouseup`, MouseUpHandler);
+      document.removeEventListener(`mousemove`, mouseMoveHandler);
+      document.removeEventListener(`mouseup`, mouseUpHandler);
 
       if (dragged) {
         const onClickPreventDefault = function (clickEvt) {
@@ -71,10 +71,10 @@
         mainPin.addEventListener(`click`, onClickPreventDefault);
       }
     };
-    document.addEventListener(`mousemove`, MouseMoveHandler);
-    document.addEventListener(`mouseup`, MouseUpHandler);
+    document.addEventListener(`mousemove`, mouseMoveHandler);
+    document.addEventListener(`mouseup`, mouseUpHandler);
   });
   window.move = {
-    addressValue
+    fillAddressValue
   };
 })();
