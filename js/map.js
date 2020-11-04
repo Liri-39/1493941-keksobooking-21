@@ -10,6 +10,8 @@
       return evt.key === `Escape`;
     },
   };
+  let dataArray = [];
+  let MAX_SIMILAR_PINS_COUNT = 5;
 
   const map = document.querySelector(`.map`);
   const mapPins = document.querySelector(`.map__pins`);
@@ -29,20 +31,29 @@
     document.addEventListener(`keydown`, escapePressHandler);
   };
 
-  const successHandler = function (objects) {
-    objects.forEach(function (object) {
-      const pin = window.pins.renderPin(object);
+  const updatePins = () => {
+    dataArray = window.sortDataArray(dataArray);
+    if (dataArray.length < 5) {
+      MAX_SIMILAR_PINS_COUNT = dataArray.length;
+    }
+    for (let i = 0; i < MAX_SIMILAR_PINS_COUNT; i++) {
+      const pin = window.pins.renderPin(dataArray[i]);
       fragment.appendChild(pin);
       pin.addEventListener(`click`, function () {
-        showCard(object);
+        showCard(dataArray[i]);
       });
       pin.addEventListener(`keydown`, function (evt) {
         if (Keys.isEnter(evt)) {
-          showCard(object);
+          showCard(dataArray[i]);
         }
       });
-    });
+    }
     mapPins.appendChild(fragment);
+  };
+
+  const successHandler = function (objects) {
+    dataArray = objects;
+    updatePins();
   };
 
   const errorHandler = function (errorMessage) {
@@ -68,18 +79,23 @@
     closePopup();
   };
 
-  const closePopup = function () {
-    document.removeEventListener(`keydown`, escapePressHandler);
-    const buttonCloseCard = map.querySelector(`.popup__close`);
-    buttonCloseCard.removeEventListener(`click`, buttonClickHandler);
+  const removeCard = () => {
     const card = map.querySelector(`.popup`);
     if (card) {
       map.removeChild(card);
     }
   };
+  const closePopup = function () {
+    document.removeEventListener(`keydown`, escapePressHandler);
+    const buttonCloseCard = map.querySelector(`.popup__close`);
+    buttonCloseCard.removeEventListener(`click`, buttonClickHandler);
+    removeCard();
+  };
 
   window.page = {
     showPins,
-    Keys
+    Keys,
+    removeCard,
+    dataArray
   };
 })();
