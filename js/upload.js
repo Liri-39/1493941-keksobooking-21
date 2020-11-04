@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   const URL = `https://21.javascript.pages.academy/keksobooking`;
-  const TIMEOUT_IN_MS = 1;
+  const TIMEOUT_IN_MS = 1000;
   window.upload = function (data, onSuccess, onError) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = `json`;

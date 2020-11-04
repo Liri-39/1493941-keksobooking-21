@@ -33,6 +33,7 @@
   const filter = document.querySelector(`.map__filters-container`);
   const allFormFieldset = form.querySelectorAll(`fieldset`);
   const allFilterSelect = filter.querySelectorAll(`select`);
+  const filterFieldset = filter.querySelector(`fieldset`);
   const priceInput = form.querySelector(`#price`);
   const typeInput = form.querySelector(`#type`);
   const timeoutSelect = form.querySelector(`#timeout`);
@@ -66,6 +67,14 @@
   capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
   setDisableOptions();
 
+  const removePins = () => {
+    const pins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
+    for (let i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
+  };
+
+
   // деактивация
   const formDeactivateHandler = function () {
     map.classList.add(`map--faded`);
@@ -79,7 +88,8 @@
     allFilterSelect.forEach(function (select) {
       select.disabled = true;
     });
-    filter.querySelector(`fieldset`).disabled = true;
+    filterFieldset.disabled = true;
+    removePins();
   };
 
   resetButton.addEventListener(`click`, formDeactivateHandler);
@@ -95,6 +105,7 @@
     allFilterSelect.forEach(function (select) {
       select.disabled = false;
     });
+    filterFieldset.disabled = false;
     window.page.showPins();
     form.addEventListener(`submit`, function (evt) {
       window.upload(new FormData(form), onSuccess, onError);
@@ -119,7 +130,7 @@
     document.addEventListener(`keydown`, escapePressHandler);
 
     const clickHandler = function () {
-      document.removeEventListener(`click`, clickHandler);
+      errorMessage.removeEventListener(`click`, clickHandler);
       errorMessage.remove();
     };
     errorMessage.addEventListener(`click`, clickHandler);
@@ -128,10 +139,7 @@
   const onSuccess = function () {
     form.reset();
     formDeactivateHandler();
-    const pins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
-    for (let i = 0; i < pins.length; i++) {
-      pins[i].remove();
-    }
+    removePins();
     const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
     const message = messageTemplate.cloneNode(true);
     document.body.insertAdjacentElement(`afterbegin`, message);
@@ -148,7 +156,7 @@
     document.addEventListener(`keydown`, escapePressHandler);
 
     const clickHandler = function () {
-      document.removeEventListener(`click`, clickHandler);
+      successMessage.removeEventListener(`click`, clickHandler);
       successMessage.remove();
     };
     successMessage.addEventListener(`click`, clickHandler);
@@ -174,6 +182,7 @@
   window.form = {
     TYPES,
     formActivateHandler,
-    formDeactivateHandler
+    formDeactivateHandler,
+    removePins
   };
 })();
