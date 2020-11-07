@@ -33,7 +33,7 @@
   const filter = document.querySelector(`.map__filters-container`);
   const allFormFieldset = form.querySelectorAll(`fieldset`);
   const allFilterSelect = filter.querySelectorAll(`select`);
-  const filterFieldset = filter.querySelector(`fieldset`);
+  const allfilterCheckbox = filter.querySelectorAll(`.map__checkbox`);
   const priceInput = form.querySelector(`#price`);
   const typeInput = form.querySelector(`#type`);
   const timeoutSelect = form.querySelector(`#timeout`);
@@ -50,7 +50,7 @@
     y: mainPin.offsetTop,
     x: mainPin.offsetLeft
   };
-  form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth / 2)}`;
+  window.move.fillAddressValue(startCoords.x, startCoords.y, false);
 
   priceInput.placeholder = TYPES[typeInput.value].minprice;
   priceInput.min = TYPES[typeInput.value].minprice;
@@ -80,22 +80,31 @@
     form.classList.add(`ad-form--disabled`);
     capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
     setDisableOptions();
-    form.querySelector(`#address`).value = `${Math.round(startCoords.x + mainPin.offsetHeight / 2)}, ${Math.round(startCoords.y + mainPin.offsetWidth / 2)}`;
+    window.move.fillAddressValue(startCoords.x, startCoords.y, false);
+    mainPin.style.left = startCoords.x + `px`;
+    mainPin.style.top = startCoords.y + `px`;
     allFormFieldset.forEach(function (fieldset) {
       fieldset.disabled = true;
     });
     allFilterSelect.forEach(function (select) {
       select.disabled = true;
     });
-    filterFieldset.disabled = true;
+    allfilterCheckbox.forEach(function (checkbox) {
+      checkbox.checked = false;
+      checkbox.disabled = true;
+    });
     removePins();
+    const activeCard = document.querySelector(`.popup`);
+    if (activeCard) {
+      window.page.closePopup();
+    }
   };
 
   resetButton.addEventListener(`click`, formDeactivateHandler);
 
   // активация
   const formActivateHandler = function () {
-    form.querySelector(`#address`).value = window.move.fillAddressValue(startCoords.x, startCoords.y);
+    window.move.fillAddressValue(startCoords.x, startCoords.y, true);
     map.classList.remove(`map--faded`);
     form.classList.remove(`ad-form--disabled`);
     allFormFieldset.forEach(function (fieldset) {
@@ -104,7 +113,9 @@
     allFilterSelect.forEach(function (select) {
       select.disabled = false;
     });
-    filterFieldset.disabled = false;
+    allfilterCheckbox.forEach(function (checkbox) {
+      checkbox.disabled = false;
+    });
     window.page.showPins();
     form.addEventListener(`submit`, function (evt) {
       window.upload(new FormData(form), onSuccess, onError);

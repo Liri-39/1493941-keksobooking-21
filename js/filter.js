@@ -3,7 +3,8 @@
 (function () {
   const filters = document.querySelector(`.map__filters`);
 
-  const sortDataArray = (dataArray) => {
+  const filteredDataArray = (dataArray) => {
+
     const filterValueArray = {
       type: filters.querySelector(`#housing-type`).value,
       price: filters.querySelector(`#housing-price`).value,
@@ -15,46 +16,52 @@
       priceMin: 10000,
       priceMax: 50000
     };
-    let array = dataArray.filter(function (arrayItem) {
+
+    let array = [];
+
+    for (let i = 0; i < dataArray.length; i++) {
+
       let isFiltered = true;
       switch (isFiltered) {
-        case (arrayItem.offer.type !== filterValueArray.type && filterValueArray.type !== `any`):
+        case (dataArray[i].offer.type !== filterValueArray.type && filterValueArray.type !== `any`):
           isFiltered = false;
           break;
-        case (arrayItem.offer.rooms !== Number(filterValueArray.rooms) && filterValueArray.rooms !== `any`):
+        case (dataArray[i].offer.rooms !== Number(filterValueArray.rooms) && filterValueArray.rooms !== `any`):
           isFiltered = false;
           break;
-        case (arrayItem.offer.guests !== Number(filterValueArray.guests) && filterValueArray.guests !== `any`):
+        case (dataArray[i].offer.guests !== Number(filterValueArray.guests) && filterValueArray.guests !== `any`):
           isFiltered = false;
           break;
-        case (arrayItem.offer.price >= FilterOfferPrice.priceMin && filterValueArray.price === `low`):
+        case (dataArray[i].offer.price >= FilterOfferPrice.priceMin && filterValueArray.price === `low`):
           isFiltered = false;
           break;
-        case (arrayItem.offer.price <= FilterOfferPrice.priceMax && filterValueArray.price === `high`):
+        case (dataArray[i].offer.price <= FilterOfferPrice.priceMax && filterValueArray.price === `high`):
           isFiltered = false;
           break;
-        case ((arrayItem.offer.price <= FilterOfferPrice.priceMin || arrayItem.offer.price >= FilterOfferPrice.priceMax) && filterValueArray.price === `middle`):
+        case ((dataArray[i].offer.price <= FilterOfferPrice.priceMin || dataArray[i].offer.price >= FilterOfferPrice.priceMax) && filterValueArray.price === `middle`):
           isFiltered = false;
           break;
 
-        case (arrayItem.offer.features !== filterValueArray.features && filterValueArray.features.length !== 0):
+        case (dataArray[i].offer.features !== filterValueArray.features && filterValueArray.features.length !== 0):
           filterValueArray.features.forEach((feature) => {
-            if (!arrayItem.offer.features.includes(feature)) {
+            if (!dataArray[i].offer.features.includes(feature)) {
               isFiltered = false;
             }
           });
           break;
-        default:
-          isFiltered = true;
       }
-      return isFiltered;
-    });
+      if (isFiltered === true) {
+        array.push(dataArray[i]);
+      }
+      if (array.length === 5) {
+        break;
+      }
+    }
 
     return array;
   };
-
   window.filter = {
-    sortDataArray
+    filteredDataArray
   };
 
 })();

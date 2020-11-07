@@ -22,7 +22,8 @@
   };
 
   const updatePins = (arr) => {
-    let newDataArray = window.filter.sortDataArray(arr);
+
+    let newDataArray = window.filter.filteredDataArray(arr);
     let PINS_COUNT = MAX_SIMILAR_PINS_COUNT;
     if (newDataArray.length < MAX_SIMILAR_PINS_COUNT) {
       PINS_COUNT = newDataArray.length;
@@ -75,7 +76,7 @@
   };
 
   const changeFilterHandler = function () {
-    window.debounce.debounce(showPins());
+    window.debounce.debounce(() => updatePins(dataArray));
     window.form.removePins();
     removeCard();
   };
