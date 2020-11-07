@@ -75,7 +75,7 @@
   };
 
   const changeFilterHandler = function () {
-    window.debounce.debounce (showPins());
+    window.debounce.debounce(showPins());
     window.form.removePins();
     removeCard();
   };
