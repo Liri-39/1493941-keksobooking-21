@@ -74,7 +74,6 @@
     }
   };
 
-
   // деактивация
   const formDeactivateHandler = function () {
     map.classList.add(`map--faded`);
@@ -121,7 +120,7 @@
     const errorMessage = document.querySelector(`.error`);
 
     const escapePressHandler = function (evt) {
-      if (window.page.Keys.isEscape(evt)) {
+      if (window.util.Keys.isEscape(evt)) {
         document.removeEventListener(`keydown`, escapePressHandler);
         errorMessage.remove();
       }
@@ -147,7 +146,7 @@
     const successMessage = document.querySelector(`.success`);
 
     const escapePressHandler = function (evt) {
-      if (window.page.Keys.isEscape(evt)) {
+      if (window.util.Keys.isEscape(evt)) {
         document.removeEventListener(`keydown`, escapePressHandler);
         successMessage.remove();
       }
