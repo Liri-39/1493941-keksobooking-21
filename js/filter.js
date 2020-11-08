@@ -2,25 +2,66 @@
 
 (function () {
   const filters = document.querySelector(`.map__filters`);
-  window.sortDataArray = (dataArray) => {
 
-    let housingType = filters.querySelector(`#housing-type`).value;
+  const filteredDataArray = (dataArray) => {
+
+    const filterValueArray = {
+      type: filters.querySelector(`#housing-type`).value,
+      price: filters.querySelector(`#housing-price`).value,
+      rooms: filters.querySelector(`#housing-rooms`).value,
+      guests: filters.querySelector(`#housing-guests`).value,
+      features: Array.from(filters.querySelectorAll(`.map__checkbox:checked`)).map((cb) => cb.value),
+    };
+    const FilterOfferPrice = {
+      priceMin: 10000,
+      priceMax: 50000
+    };
+
     let array = [];
-    if (housingType === `any`) {
-      array = dataArray;
-    } else {
-      for (let i = 0; i < dataArray.length; i++) {
 
-        if (dataArray[i].offer.type === housingType) {
-          array.push(dataArray[i]);
-        }
+    for (let i = 0; i < dataArray.length; i++) {
+
+      let isFiltered = true;
+      switch (isFiltered) {
+        case (dataArray[i].offer.type !== filterValueArray.type && filterValueArray.type !== `any`):
+          isFiltered = false;
+          break;
+        case (dataArray[i].offer.rooms !== Number(filterValueArray.rooms) && filterValueArray.rooms !== `any`):
+          isFiltered = false;
+          break;
+        case (dataArray[i].offer.guests !== Number(filterValueArray.guests) && filterValueArray.guests !== `any`):
+          isFiltered = false;
+          break;
+        case (dataArray[i].offer.price >= FilterOfferPrice.priceMin && filterValueArray.price === `low`):
+          isFiltered = false;
+          break;
+        case (dataArray[i].offer.price <= FilterOfferPrice.priceMax && filterValueArray.price === `high`):
+          isFiltered = false;
+          break;
+        case ((dataArray[i].offer.price <= FilterOfferPrice.priceMin || dataArray[i].offer.price >= FilterOfferPrice.priceMax) && filterValueArray.price === `middle`):
+          isFiltered = false;
+          break;
+
+        case (dataArray[i].offer.features !== filterValueArray.features && filterValueArray.features.length !== 0):
+          filterValueArray.features.forEach((feature) => {
+            if (!dataArray[i].offer.features.includes(feature)) {
+              isFiltered = false;
+            }
+          });
+          break;
+      }
+      if (isFiltered === true) {
+        array.push(dataArray[i]);
+      }
+      if (array.length === 5) {
+        break;
       }
     }
+
     return array;
   };
-  filters.addEventListener(`change`, function () {
-    window.form.removePins();
-    window.page.showPins();
-    window.page.removeCard();
-  });
+  window.filter = {
+    filteredDataArray
+  };
+
 })();

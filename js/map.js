@@ -1,24 +1,14 @@
 'use strict';
 
-/* управляет карточками объявлений и метками: добавляет на страницу нужную карточку, отрисовывает метки и осуществляет взаимодействие карточки и метки на карте */
 (function () {
-  const Keys = {
-    isEnter(evt) {
-      return evt.key === `Enter`;
-    },
-    isEscape(evt) {
-      return evt.key === `Escape`;
-    },
-  };
   let dataArray = [];
   let MAX_SIMILAR_PINS_COUNT = 5;
-
   const map = document.querySelector(`.map`);
   const mapPins = document.querySelector(`.map__pins`);
   const fragment = document.createDocumentFragment();
   const filter = document.querySelector(`.map__filters-container`);
+  const filters = document.querySelector(`.map__filters`);
 
-  // добавляет на страницу нужную карточку
   const showCard = function (pin) {
     const activeCard = document.querySelector(`.popup`);
     if (activeCard) {
@@ -27,33 +17,36 @@
     const cardElement = window.card.renderCard(pin);
     map.insertBefore(cardElement, filter);
     const buttonCloseCard = map.querySelector(`.popup__close`);
-    buttonCloseCard.addEventListener(`click`, buttonClickHandler);
-    document.addEventListener(`keydown`, escapePressHandler);
+    buttonCloseCard.addEventListener(`click`, window.util.buttonClickHandler);
+    document.addEventListener(`keydown`, window.util.escapePressHandler);
   };
 
-  const updatePins = () => {
-    dataArray = window.sortDataArray(dataArray);
-    if (dataArray.length < 5) {
-      MAX_SIMILAR_PINS_COUNT = dataArray.length;
+  const updatePins = (arr) => {
+
+    let newDataArray = window.filter.filteredDataArray(arr);
+    let PINS_COUNT = MAX_SIMILAR_PINS_COUNT;
+    if (newDataArray.length < MAX_SIMILAR_PINS_COUNT) {
+      PINS_COUNT = newDataArray.length;
     }
-    for (let i = 0; i < MAX_SIMILAR_PINS_COUNT; i++) {
-      const pin = window.pins.renderPin(dataArray[i]);
+    newDataArray = newDataArray.slice(0, PINS_COUNT);
+    newDataArray.forEach((arrayItem) => {
+      const pin = window.pins.renderPin(arrayItem);
       fragment.appendChild(pin);
       pin.addEventListener(`click`, function () {
-        showCard(dataArray[i]);
+        showCard(arrayItem);
       });
       pin.addEventListener(`keydown`, function (evt) {
-        if (Keys.isEnter(evt)) {
-          showCard(dataArray[i]);
+        if (window.util.Keys.isEnter(evt)) {
+          showCard(arrayItem);
         }
       });
-    }
+    });
     mapPins.appendChild(fragment);
   };
 
   const successHandler = function (objects) {
     dataArray = objects;
-    updatePins();
+    updatePins(dataArray);
   };
 
   const errorHandler = function (errorMessage) {
@@ -65,18 +58,8 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
-  // отрисовывает метки
   const showPins = function () {
     window.loadData(successHandler, errorHandler);
-  };
-
-  const escapePressHandler = function (evt) {
-    if (Keys.isEscape(evt)) {
-      closePopup();
-    }
-  };
-  const buttonClickHandler = function () {
-    closePopup();
   };
 
   const removeCard = () => {
@@ -86,16 +69,26 @@
     }
   };
   const closePopup = function () {
-    document.removeEventListener(`keydown`, escapePressHandler);
+    document.removeEventListener(`keydown`, window.util.escapePressHandler);
     const buttonCloseCard = map.querySelector(`.popup__close`);
-    buttonCloseCard.removeEventListener(`click`, buttonClickHandler);
+    buttonCloseCard.removeEventListener(`click`, window.util.buttonClickHandler);
     removeCard();
   };
 
+  const changeFilterHandler = function () {
+    window.debounce.debounce(() => updatePins(dataArray));
+    window.form.removePins();
+    removeCard();
+  };
+
+  filters.addEventListener(`change`, changeFilterHandler);
+
   window.page = {
     showPins,
-    Keys,
     removeCard,
-    dataArray
+    dataArray,
+    successHandler,
+    updatePins,
+    closePopup
   };
 })();

@@ -1,13 +1,17 @@
 'use strict';
 (function () {
+  const form = document.querySelector(`.ad-form`);
   const coordLimits = {
     minY: 0,
     minX: 130,
     maxX: 630
   };
-  const fillAddressValue = function (x, y) {
-    const coord = `${Math.round(y + mainPin.offsetWidth / 2)}, ${Math.round(x + mainPin.offsetHeight)}`;
-    return coord;
+  const fillAddressValue = function (x, y, isDragged) {
+    let xOffset = mainPin.offsetHeight / 2;
+    if (isDragged) {
+      xOffset = mainPin.offsetHeight;
+    }
+    form.querySelector(`#address`).value = `${Math.round(y + mainPin.offsetWidth / 2)}, ${Math.round(x + xOffset)}`;
   };
   const map = document.querySelector(`.map`);
   const mainPin = map.querySelector(`.map__pin--main`);
@@ -54,7 +58,7 @@
       mainPin.style.left = coordY + `px`;
       mainPin.style.top = coordX + `px`;
 
-      document.querySelector(`#address`).value = fillAddressValue(coordX, coordY);
+      fillAddressValue(coordX, coordY, true);
     };
 
     const mouseUpHandler = function (upEvt) {
