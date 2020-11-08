@@ -43,6 +43,7 @@ const preview = form.querySelector(`.ad-form-header__preview img`);
 const photoChooser = form.querySelector(`.ad-form__upload input[type=file]`);
 const photoPreview = form.querySelector(`.ad-form__photo`);
 
+
 const startCoords = {
   y: mainPin.offsetTop,
   x: mainPin.offsetLeft

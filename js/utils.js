@@ -26,6 +26,7 @@ const debounce = function (cb) {
   lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
 };
 
+
 const fileChooserHandler = (elem1, elem2, flag) => {
 
   const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
