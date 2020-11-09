@@ -37,11 +37,12 @@ const timeoutSelect = form.querySelector(`#timeout`);
 const timeinSelect = form.querySelector(`#timein`);
 const roomNumberSelect = form.querySelector(`#room_number`);
 const capacitySelect = form.querySelector(`#capacity`);
-const resetButton = document.querySelector(`.ad-form__reset`);
+const resetButton = form.querySelector(`.ad-form__reset`);
+const fileChooser = form.querySelector(`.ad-form__field input[type=file]`);
+const preview = form.querySelector(`.ad-form-header__preview img`);
+const photoChooser = form.querySelector(`.ad-form__upload input[type=file]`);
+const photoPreview = form.querySelector(`.ad-form__photo`);
 
-// действия при загрузке страницы
-
-/* установка  координат в неактивном состоянии*/
 
 const startCoords = {
   y: mainPin.offsetTop,
@@ -95,9 +96,12 @@ const formDeactivateHandler = function () {
   if (activeCard) {
     window.page.closePopup();
   }
+  fileChooser.removeEventListener(`change`, window.util.fileChooserHandler(fileChooser, preview));
+  photoChooser.removeEventListener(`change`, window.util.fileChooserHandler(photoChooser, photoPreview));
+  if (photoPreview.hasChildNodes()) {
+    photoPreview.removeChild();
+  }
 };
-
-resetButton.addEventListener(`click`, formDeactivateHandler);
 
 // активация
 const formActivateHandler = function () {
@@ -118,6 +122,9 @@ const formActivateHandler = function () {
     window.upload(new FormData(form), onSuccess, onError);
     evt.preventDefault();
   });
+  fileChooser.addEventListener(`change`, () => window.util.fileChooserHandler(fileChooser, preview, 1));
+  photoChooser.addEventListener(`change`, () => window.util.fileChooserHandler(photoChooser, photoPreview, 2));
+  resetButton.addEventListener(`click`, formDeactivateHandler);
 };
 
 const onError = function () {
