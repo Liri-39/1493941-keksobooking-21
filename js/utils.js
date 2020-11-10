@@ -57,10 +57,24 @@ const chooseFile = (firstElement, secondElement, isAvatar = true) => {
   }
 };
 
+const removeElement = (evt, element, cb) => {
+
+  if (evt.type === `keydown`) {
+    if (Keys.isEscape(evt)) {
+      document.removeEventListener(`keydown`, cb);
+    }
+  } else if (evt.type === `click`) {
+    document.removeEventListener(`click`, cb);
+  }
+
+  element.remove();
+};
+
 window.util = {
   escapePressHandler,
   buttonClickHandler,
   Keys,
   debounce,
-  chooseFile
+  chooseFile,
+  removeElement
 };

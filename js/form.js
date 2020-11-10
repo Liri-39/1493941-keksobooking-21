@@ -125,7 +125,7 @@ const formActivateHandler = () => {
   });
   window.page.showPins();
   form.addEventListener(`submit`, (evt) => {
-    window.upload(new FormData(form), onSuccess, onError);
+    window.load(onSuccess, onError, new FormData(form));
     evt.preventDefault();
   });
   fileChooser.addEventListener(`change`, avatarChooserHandler);
@@ -136,50 +136,31 @@ const formActivateHandler = () => {
 const onError = () => {
   const messageTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
   const message = messageTemplate.cloneNode(true);
+
   document.body.insertAdjacentElement(`afterbegin`, message);
 
   const errorMessage = document.querySelector(`.error`);
-
-  const escapePressHandler = (evt) => {
-    if (window.util.Keys.isEscape(evt)) {
-      document.removeEventListener(`keydown`, escapePressHandler);
-      errorMessage.remove();
-    }
+  const closeMessageHandler = (evt) => {
+    window.util.removeElement(evt, errorMessage, closeMessageHandler);
   };
-
-  document.addEventListener(`keydown`, escapePressHandler);
-
-  const clickHandler = () => {
-    errorMessage.removeEventListener(`click`, clickHandler);
-    errorMessage.remove();
-  };
-  errorMessage.addEventListener(`click`, clickHandler);
+  document.addEventListener(`keydown`, closeMessageHandler);
+  errorMessage.addEventListener(`click`, closeMessageHandler);
 };
 
 const onSuccess = () => {
+  const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
+  const message = messageTemplate.cloneNode(true);
+
   form.reset();
   formDeactivateHandler();
   removePins();
-  const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`);
-  const message = messageTemplate.cloneNode(true);
   document.body.insertAdjacentElement(`afterbegin`, message);
-
   const successMessage = document.querySelector(`.success`);
-
-  const escapePressHandler = (evt) => {
-    if (window.util.Keys.isEscape(evt)) {
-      document.removeEventListener(`keydown`, escapePressHandler);
-      successMessage.remove();
-    }
+  const closeMessageHandler = (evt) => {
+    window.util.removeElement(evt, successMessage, closeMessageHandler);
   };
-
-  document.addEventListener(`keydown`, escapePressHandler);
-
-  const clickHandler = () => {
-    successMessage.removeEventListener(`click`, clickHandler);
-    successMessage.remove();
-  };
-  successMessage.addEventListener(`click`, clickHandler);
+  document.addEventListener(`keydown`, closeMessageHandler);
+  successMessage.addEventListener(`click`, closeMessageHandler);
 };
 
 

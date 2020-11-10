@@ -1,7 +1,6 @@
 'use strict';
 
 let dataArray = [];
-const MAX_SIMILAR_PINS_COUNT = 5;
 const map = document.querySelector(`.map`);
 const mapPins = document.querySelector(`.map__pins`);
 const fragment = document.createDocumentFragment();
@@ -22,9 +21,9 @@ const showCard = (pin) => {
 
 const updatePins = (arr) => {
 
-  let newDataArray = window.filter.filteredDataArray(arr);
-  let pinsCount = MAX_SIMILAR_PINS_COUNT;
-  if (newDataArray.length < MAX_SIMILAR_PINS_COUNT) {
+  let newDataArray = window.filter.getfilteredDataArray(arr);
+  let pinsCount = window.filter.MAX_SIMILAR_PINS_COUNT;
+  if (newDataArray.length < window.filter.MAX_SIMILAR_PINS_COUNT) {
     pinsCount = newDataArray.length;
   }
   newDataArray = newDataArray.slice(0, pinsCount);
@@ -45,7 +44,7 @@ const updatePins = (arr) => {
 
 const successHandler = (objects) => {
   dataArray = objects;
-  const data = objects.length > MAX_SIMILAR_PINS_COUNT ? objects.slice(0, MAX_SIMILAR_PINS_COUNT) : objects;
+  const data = objects.length > window.filter.MAX_SIMILAR_PINS_COUNT ? objects.slice(0, window.filter.MAX_SIMILAR_PINS_COUNT) : objects;
   updatePins(data);
 };
 
@@ -59,7 +58,7 @@ const errorHandler = (errorMessage) => {
 };
 
 const showPins = () => {
-  window.loadData(successHandler, errorHandler);
+  window.load(successHandler, errorHandler);
 };
 
 const removeCard = () => {
@@ -76,7 +75,9 @@ const closePopup = () => {
 };
 
 const changeFilterHandler = () => {
-  window.util.debounce(() => updatePins(dataArray));
+  window.util.debounce(() => {
+    updatePins(dataArray);
+  });
   window.form.removePins();
   removeCard();
 };

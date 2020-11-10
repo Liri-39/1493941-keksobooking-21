@@ -1,9 +1,9 @@
 'use strict';
 
-const filters = document.querySelector(`.map__filters`);
 const MAX_SIMILAR_PINS_COUNT = 5;
+const filters = document.querySelector(`.map__filters`);
 
-const filteredDataArray = (dataArray) => {
+const getfilteredDataArray = (dataArray) => {
 
   const filterValueArray = {
     type: filters.querySelector(`#housing-type`).value,
@@ -61,5 +61,6 @@ const filteredDataArray = (dataArray) => {
   return array;
 };
 window.filter = {
-  filteredDataArray
+  getfilteredDataArray,
+  MAX_SIMILAR_PINS_COUNT
 };
