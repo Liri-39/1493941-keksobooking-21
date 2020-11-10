@@ -6,7 +6,7 @@ const coordLimits = {
   minX: 130,
   maxX: 630
 };
-const fillAddressValue = function (x, y, isDragged) {
+const fillAddressValue = (x, y, isDragged) => {
   let xOffset = mainPin.offsetHeight / 2;
   if (isDragged) {
     xOffset = mainPin.offsetHeight;
@@ -15,7 +15,7 @@ const fillAddressValue = function (x, y, isDragged) {
 };
 const map = document.querySelector(`.map`);
 const mainPin = map.querySelector(`.map__pin--main`);
-mainPin.addEventListener(`mousedown`, function (evt) {
+mainPin.addEventListener(`mousedown`, (evt) => {
   evt.preventDefault();
 
   let startCoords = {
@@ -25,7 +25,7 @@ mainPin.addEventListener(`mousedown`, function (evt) {
 
   let dragged = false;
 
-  const mouseMoveHandler = function (moveEvt) {
+  const mouseMoveHandler = (moveEvt) => {
     moveEvt.preventDefault();
 
     dragged = true;
@@ -61,14 +61,14 @@ mainPin.addEventListener(`mousedown`, function (evt) {
     fillAddressValue(coordX, coordY, true);
   };
 
-  const mouseUpHandler = function (upEvt) {
+  const mouseUpHandler = (upEvt) => {
     upEvt.preventDefault();
 
     document.removeEventListener(`mousemove`, mouseMoveHandler);
     document.removeEventListener(`mouseup`, mouseUpHandler);
 
     if (dragged) {
-      const onClickPreventDefault = function (clickEvt) {
+      const onClickPreventDefault = (clickEvt) => {
         clickEvt.preventDefault();
         mainPin.removeEventListener(`click`, onClickPreventDefault);
       };

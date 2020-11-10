@@ -8,7 +8,7 @@ const fragment = document.createDocumentFragment();
 const filter = document.querySelector(`.map__filters-container`);
 const filters = document.querySelector(`.map__filters`);
 
-const showCard = function (pin) {
+const showCard = (pin) => {
   const activeCard = document.querySelector(`.popup`);
   if (activeCard) {
     closePopup();
@@ -31,10 +31,10 @@ const updatePins = (arr) => {
   newDataArray.forEach((arrayItem) => {
     const pin = window.pins.renderPin(arrayItem);
     fragment.appendChild(pin);
-    pin.addEventListener(`click`, function () {
+    pin.addEventListener(`click`, () => {
       showCard(arrayItem);
     });
-    pin.addEventListener(`keydown`, function (evt) {
+    pin.addEventListener(`keydown`, (evt) => {
       if (window.util.Keys.isEnter(evt)) {
         showCard(arrayItem);
       }
@@ -43,13 +43,13 @@ const updatePins = (arr) => {
   mapPins.appendChild(fragment);
 };
 
-const successHandler = function (objects) {
+const successHandler = (objects) => {
   dataArray = objects;
   const data = objects.length > MAX_SIMILAR_PINS_COUNT ? objects.slice(0, MAX_SIMILAR_PINS_COUNT) : objects;
   updatePins(data);
 };
 
-const errorHandler = function (errorMessage) {
+const errorHandler = (errorMessage) => {
   const node = document.createElement(`div`);
   node.style = `z-index: 100; color: wheat;`;
   node.style.fontSize = `30px`;
@@ -58,7 +58,7 @@ const errorHandler = function (errorMessage) {
   document.body.insertAdjacentElement(`afterbegin`, node);
 };
 
-const showPins = function () {
+const showPins = () => {
   window.loadData(successHandler, errorHandler);
 };
 
@@ -68,14 +68,14 @@ const removeCard = () => {
     map.removeChild(card);
   }
 };
-const closePopup = function () {
+const closePopup = () => {
   document.removeEventListener(`keydown`, window.util.escapePressHandler);
   const buttonCloseCard = map.querySelector(`.popup__close`);
   buttonCloseCard.removeEventListener(`click`, window.util.buttonClickHandler);
   removeCard();
 };
 
-const changeFilterHandler = function () {
+const changeFilterHandler = () => {
   window.util.debounce(() => updatePins(dataArray));
   window.form.removePins();
   removeCard();

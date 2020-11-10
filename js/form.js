@@ -40,9 +40,15 @@ const capacitySelect = form.querySelector(`#capacity`);
 const resetButton = form.querySelector(`.ad-form__reset`);
 const fileChooser = form.querySelector(`.ad-form__field input[type=file]`);
 const preview = form.querySelector(`.ad-form-header__preview img`);
+const previewDefaultSrc = preview.src;
 const photoChooser = form.querySelector(`.ad-form__upload input[type=file]`);
 const photoPreview = form.querySelector(`.ad-form__photo`);
-
+const avatarChooserHandler = () => {
+  window.util.chooseFile(fileChooser, preview);
+};
+const photoChooserHandler = () => {
+  window.util.chooseFile(photoChooser, photoPreview, false);
+};
 
 const startCoords = {
   y: mainPin.offsetTop,
@@ -52,13 +58,13 @@ window.move.fillAddressValue(startCoords.x, startCoords.y, false);
 
 priceInput.placeholder = TYPES[typeInput.value].minprice;
 priceInput.min = TYPES[typeInput.value].minprice;
-const setEqualValue = function (firstElement, secondElement) {
+const setEqualValue = (firstElement, secondElement) => {
   secondElement.value = firstElement.value;
 };
-const setDisableOptions = function () {
+const setDisableOptions = () => {
   capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
   const capacityOptions = capacitySelect.querySelectorAll(`option`);
-  capacityOptions.forEach(function (option) {
+  capacityOptions.forEach((option) => {
     option.disabled = !CAPACITY[roomNumberSelect.value].includes(Number(option.value));
   });
 };
@@ -73,7 +79,7 @@ const removePins = () => {
 };
 
 // деактивация
-const formDeactivateHandler = function () {
+const formDeactivateHandler = () => {
   map.classList.add(`map--faded`);
   form.classList.add(`ad-form--disabled`);
   capacitySelect.value = CAPACITY[roomNumberSelect.value][0];
@@ -81,13 +87,14 @@ const formDeactivateHandler = function () {
   window.move.fillAddressValue(startCoords.x, startCoords.y, false);
   mainPin.style.left = startCoords.x + `px`;
   mainPin.style.top = startCoords.y + `px`;
-  allFormFieldset.forEach(function (fieldset) {
+  allFormFieldset.forEach((fieldset) => {
     fieldset.disabled = true;
   });
-  allFilterSelect.forEach(function (select) {
+  allFilterSelect.forEach((select) => {
     select.disabled = true;
+    select.selectedIndex = 0;
   });
-  allfilterCheckbox.forEach(function (checkbox) {
+  allfilterCheckbox.forEach((checkbox) => {
     checkbox.checked = false;
     checkbox.disabled = true;
   });
@@ -96,45 +103,44 @@ const formDeactivateHandler = function () {
   if (activeCard) {
     window.page.closePopup();
   }
-  fileChooser.removeEventListener(`change`, window.util.fileChooserHandler(fileChooser, preview));
-  photoChooser.removeEventListener(`change`, window.util.fileChooserHandler(photoChooser, photoPreview));
-  if (photoPreview.hasChildNodes()) {
-    photoPreview.removeChild();
-  }
+  fileChooser.removeEventListener(`change`, avatarChooserHandler);
+  photoChooser.removeEventListener(`change`, photoChooserHandler);
+  photoPreview.innerHTML = ``;
+  preview.src = previewDefaultSrc;
 };
 
 // активация
-const formActivateHandler = function () {
+const formActivateHandler = () => {
   window.move.fillAddressValue(startCoords.x, startCoords.y, true);
   map.classList.remove(`map--faded`);
   form.classList.remove(`ad-form--disabled`);
-  allFormFieldset.forEach(function (fieldset) {
+  allFormFieldset.forEach((fieldset) => {
     fieldset.disabled = false;
   });
-  allFilterSelect.forEach(function (select) {
+  allFilterSelect.forEach((select) => {
     select.disabled = false;
   });
-  allfilterCheckbox.forEach(function (checkbox) {
+  allfilterCheckbox.forEach((checkbox) => {
     checkbox.disabled = false;
   });
   window.page.showPins();
-  form.addEventListener(`submit`, function (evt) {
+  form.addEventListener(`submit`, (evt) => {
     window.upload(new FormData(form), onSuccess, onError);
     evt.preventDefault();
   });
-  fileChooser.addEventListener(`change`, () => window.util.fileChooserHandler(fileChooser, preview, 1));
-  photoChooser.addEventListener(`change`, () => window.util.fileChooserHandler(photoChooser, photoPreview, 2));
+  fileChooser.addEventListener(`change`, avatarChooserHandler);
+  photoChooser.addEventListener(`change`, photoChooserHandler);
   resetButton.addEventListener(`click`, formDeactivateHandler);
 };
 
-const onError = function () {
+const onError = () => {
   const messageTemplate = document.querySelector(`#error`).content.querySelector(`.error`);
   const message = messageTemplate.cloneNode(true);
   document.body.insertAdjacentElement(`afterbegin`, message);
 
   const errorMessage = document.querySelector(`.error`);
 
-  const escapePressHandler = function (evt) {
+  const escapePressHandler = (evt) => {
     if (window.util.Keys.isEscape(evt)) {
       document.removeEventListener(`keydown`, escapePressHandler);
       errorMessage.remove();
@@ -143,14 +149,14 @@ const onError = function () {
 
   document.addEventListener(`keydown`, escapePressHandler);
 
-  const clickHandler = function () {
+  const clickHandler = () => {
     errorMessage.removeEventListener(`click`, clickHandler);
     errorMessage.remove();
   };
   errorMessage.addEventListener(`click`, clickHandler);
 };
 
-const onSuccess = function () {
+const onSuccess = () => {
   form.reset();
   formDeactivateHandler();
   removePins();
@@ -160,7 +166,7 @@ const onSuccess = function () {
 
   const successMessage = document.querySelector(`.success`);
 
-  const escapePressHandler = function (evt) {
+  const escapePressHandler = (evt) => {
     if (window.util.Keys.isEscape(evt)) {
       document.removeEventListener(`keydown`, escapePressHandler);
       successMessage.remove();
@@ -169,27 +175,27 @@ const onSuccess = function () {
 
   document.addEventListener(`keydown`, escapePressHandler);
 
-  const clickHandler = function () {
+  const clickHandler = () => {
     successMessage.removeEventListener(`click`, clickHandler);
     successMessage.remove();
   };
   successMessage.addEventListener(`click`, clickHandler);
 };
 
-// меняем плейсхолдер у цены в соответствии с типом
-typeInput.addEventListener(`input`, function () {
+
+typeInput.addEventListener(`input`, () => {
   priceInput.min = TYPES[typeInput.value].minprice;
   priceInput.placeholder = TYPES[typeInput.value].minprice;
 });
-// меняем время выезда/заезда
-timeinSelect.addEventListener(`input`, function () {
+
+timeinSelect.addEventListener(`input`, () => {
   setEqualValue(timeinSelect, timeoutSelect);
 });
-timeoutSelect.addEventListener(`input`, function () {
+timeoutSelect.addEventListener(`input`, () => {
   setEqualValue(timeoutSelect, timeinSelect);
 });
-// меняем количество комнат/гостей
-roomNumberSelect.addEventListener(`input`, function () {
+
+roomNumberSelect.addEventListener(`input`, () => {
   setDisableOptions();
 });
 

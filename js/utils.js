@@ -10,46 +10,45 @@ const Keys = {
 };
 const DEBOUNCE_INTERVAL = 500;
 let lastTimeout;
-const escapePressHandler = function (evt) {
+const escapePressHandler = (evt) => {
   if (Keys.isEscape(evt)) {
     window.page.closePopup();
   }
 };
-const buttonClickHandler = function () {
+const buttonClickHandler = () => {
   window.page.closePopup();
 };
 
-const debounce = function (cb) {
+const debounce = (cb) => {
   if (lastTimeout) {
     clearTimeout(lastTimeout);
   }
   lastTimeout = setTimeout(cb, DEBOUNCE_INTERVAL);
 };
 
-
-const fileChooserHandler = (elem1, elem2, flag) => {
+const chooseFile = (firstElement, secondElement, isAvatar = true) => {
 
   const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
-  if (elem1.files.length > 0) {
-    const file = elem1.files[0];
+  if (firstElement.files.length) {
+    const file = firstElement.files[0];
     const fileName = file.name.toLowerCase();
 
-    const matches = FILE_TYPES.some(function (it) {
+    const matches = FILE_TYPES.some((it) => {
       return fileName.endsWith(it);
     });
 
     if (matches) {
       const reader = new FileReader();
 
-      reader.addEventListener(`load`, function () {
-        if (flag === 1) {
-          elem2.src = reader.result;
+      reader.addEventListener(`load`, () => {
+        if (isAvatar) {
+          secondElement.src = reader.result;
         } else {
           const imgEl = document.createElement(`img`);
           imgEl.src = reader.result;
-          imgEl.width = elem2.offsetWidth;
-          imgEl.height = elem2.offsetHeight;
-          elem2.appendChild(imgEl);
+          imgEl.width = secondElement.offsetWidth;
+          imgEl.height = secondElement.offsetHeight;
+          secondElement.appendChild(imgEl);
         }
       });
 
@@ -63,5 +62,5 @@ window.util = {
   buttonClickHandler,
   Keys,
   debounce,
-  fileChooserHandler
+  chooseFile
 };

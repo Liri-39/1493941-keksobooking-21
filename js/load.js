@@ -10,12 +10,12 @@ const Url = {
 };
 const TIMEOUT_IN_MS = 10000;
 
-window.loadData = function (onSuccess, onError) {
+window.loadData = (onSuccess, onError) => {
   const xhr = new XMLHttpRequest();
   xhr.responseType = `json`;
   xhr.open(`GET`, Url.GET);
 
-  xhr.addEventListener(`load`, function () {
+  xhr.addEventListener(`load`, () => {
     if (xhr.status === StatusCode.OK) {
       onSuccess(xhr.response);
     } else {
@@ -23,10 +23,10 @@ window.loadData = function (onSuccess, onError) {
     }
   });
 
-  xhr.addEventListener(`error`, function () {
+  xhr.addEventListener(`error`, () => {
     onError(`Произошла ошибка соединения`);
   });
-  xhr.addEventListener(`timeout`, function () {
+  xhr.addEventListener(`timeout`, () => {
     onError(`Запрос не успел выполниться за  ${xhr.timeout} мс`);
   });
 
@@ -35,21 +35,21 @@ window.loadData = function (onSuccess, onError) {
   xhr.send();
 };
 
-window.upload = function (data, onSuccess, onError) {
+window.upload = (data, onSuccess, onError) => {
   const xhr = new XMLHttpRequest();
   xhr.responseType = `json`;
 
-  xhr.addEventListener(`load`, function () {
+  xhr.addEventListener(`load`, () => {
     onSuccess(xhr.response);
   });
 
   xhr.open(`POST`, Url.POST);
   xhr.send(data);
 
-  xhr.addEventListener(`error`, function () {
+  xhr.addEventListener(`error`, () => {
     onError(`Произошла ошибка соединения`);
   });
-  xhr.addEventListener(`timeout`, function () {
+  xhr.addEventListener(`timeout`, () => {
     onError(`Запрос не успел выполниться за  ${xhr.timeout} мс`);
   });
 

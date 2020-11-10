@@ -5,13 +5,13 @@ const mainPin = map.querySelector(`.map__pin--main`);
 
 window.form.formDeactivateHandler();
 
-mainPin.addEventListener(`mousedown`, function (evt) {
+mainPin.addEventListener(`mousedown`, (evt) => {
   if (evt.button === 0) {
     window.form.formActivateHandler();
   }
 
 });
-mainPin.addEventListener(`keydown`, function (evt) {
+mainPin.addEventListener(`keydown`, (evt) => {
   if (window.page.Keys.isEnter(evt)) {
     window.form.formActivateHandler();
   }
