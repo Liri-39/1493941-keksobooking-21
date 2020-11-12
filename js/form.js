@@ -110,7 +110,7 @@ const formDeactivateHandler = () => {
 };
 
 const formActivateHandler = (evt) => {
-  if (evt.button === 0 || window.page.Keys.isEnter(evt)) {
+  if (window.util.Buttons.isLeft(evt) || window.util.Keys.isEnter(evt)) {
     activate();
   }
 };

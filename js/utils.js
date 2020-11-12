@@ -8,6 +8,11 @@ const Keys = {
     return evt.key === `Escape`;
   },
 };
+const Buttons = {
+  isLeft(evt) {
+    return evt.button === 0;
+  }
+};
 const DEBOUNCE_INTERVAL = 500;
 let lastTimeout;
 const escapePressHandler = (evt) => {
@@ -74,6 +79,7 @@ window.util = {
   escapePressHandler,
   buttonClickHandler,
   Keys,
+  Buttons,
   debounce,
   chooseFile,
   removeElement

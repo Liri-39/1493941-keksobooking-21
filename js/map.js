@@ -1,6 +1,5 @@
 'use strict';
 
-const FONT_SIZE = `30px`;
 let dataArray = [];
 const map = document.querySelector(`.map`);
 const mapPins = document.querySelector(`.map__pins`);
@@ -50,9 +49,9 @@ const successHandler = (objects) => {
 };
 
 const errorHandler = (errorMessage) => {
+  const MESSAGE_STYLE = `z-index: 100; color: wheat; font-size: 30px`;
   const node = document.createElement(`div`);
-  node.style = `z-index: 100; color: wheat;`;
-  node.style.fontSize = FONT_SIZE;
+  node.style.cssText = MESSAGE_STYLE;
   node.classList.add(`error`);
   node.textContent = errorMessage;
   document.body.insertAdjacentElement(`afterbegin`, node);
