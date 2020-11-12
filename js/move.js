@@ -1,4 +1,6 @@
 'use strict';
+const map = document.querySelector(`.map`);
+const mainPin = map.querySelector(`.map__pin--main`);
 const PIN_TAIL = 22;
 const form = document.querySelector(`.ad-form`);
 
@@ -17,8 +19,7 @@ const fillAddressValue = (x, y, isDragged) => {
   }
   form.querySelector(`#address`).value = `${Math.round(x + xOffset)}, ${Math.round(y + yOffset)}`;
 };
-const map = document.querySelector(`.map`);
-const mainPin = map.querySelector(`.map__pin--main`);
+
 mainPin.addEventListener(`mousedown`, (evt) => {
   evt.preventDefault();
 
@@ -46,6 +47,7 @@ mainPin.addEventListener(`mousedown`, (evt) => {
 
     let coordX = mainPin.offsetLeft - shift.x;
     let coordY = mainPin.offsetTop - shift.y;
+
     if (coordY < coordLimits.minY - mainPin.offsetHeight - PIN_TAIL) {
       coordY = coordLimits.minY - mainPin.offsetHeight - PIN_TAIL;
     } else if (coordY > coordLimits.maxY - mainPin.offsetHeight - PIN_TAIL) {
@@ -82,5 +84,6 @@ mainPin.addEventListener(`mousedown`, (evt) => {
   document.addEventListener(`mouseup`, mouseUpHandler);
 });
 window.move = {
-  fillAddressValue
+  fillAddressValue,
+  PIN_TAIL
 };

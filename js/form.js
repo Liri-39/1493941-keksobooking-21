@@ -117,7 +117,7 @@ const formActivateHandler = (evt) => {
 
 // активация
 const activate = () => {
-  window.move.fillAddressValue(startCoords.x, startCoords.y, true);
+  mainPin.style = `left: ${startCoords.x}px; top: ${startCoords.y - window.move.PIN_TAIL - mainPin.offsetHeight / 2}px;`;
   map.classList.remove(`map--faded`);
   form.classList.remove(`ad-form--disabled`);
   allFormFieldset.forEach((fieldset) => {
