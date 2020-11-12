@@ -1,5 +1,6 @@
 'use strict';
 
+const FONT_SIZE = `30px`;
 let dataArray = [];
 const map = document.querySelector(`.map`);
 const mapPins = document.querySelector(`.map__pins`);
@@ -12,7 +13,7 @@ const showCard = (pin) => {
   if (activeCard) {
     closePopup();
   }
-  const cardElement = window.card.renderCard(pin);
+  const cardElement = window.card.renderElement(pin);
   map.insertBefore(cardElement, filter);
   const buttonCloseCard = map.querySelector(`.popup__close`);
   buttonCloseCard.addEventListener(`click`, window.util.buttonClickHandler);
@@ -28,7 +29,7 @@ const updatePins = (arr) => {
   }
   newDataArray = newDataArray.slice(0, pinsCount);
   newDataArray.forEach((arrayItem) => {
-    const pin = window.pins.renderPin(arrayItem);
+    const pin = window.pins.renderElement(arrayItem);
     fragment.appendChild(pin);
     pin.addEventListener(`click`, () => {
       showCard(arrayItem);
@@ -51,7 +52,7 @@ const successHandler = (objects) => {
 const errorHandler = (errorMessage) => {
   const node = document.createElement(`div`);
   node.style = `z-index: 100; color: wheat;`;
-  node.style.fontSize = `30px`;
+  node.style.fontSize = FONT_SIZE;
   node.classList.add(`error`);
   node.textContent = errorMessage;
   document.body.insertAdjacentElement(`afterbegin`, node);

@@ -1,17 +1,21 @@
 'use strict';
-
+const PIN_TAIL = 22;
 const form = document.querySelector(`.ad-form`);
+
 const coordLimits = {
-  minY: 0,
-  minX: 130,
-  maxX: 630
+  minX: 0,
+  minY: 130,
+  maxY: 630
 };
 const fillAddressValue = (x, y, isDragged) => {
-  let xOffset = mainPin.offsetHeight / 2;
+
+  let yOffset = mainPin.offsetHeight / 2;
+  const xOffset = mainPin.offsetWidth / 2;
+
   if (isDragged) {
-    xOffset = mainPin.offsetHeight;
+    yOffset = mainPin.offsetHeight + PIN_TAIL;
   }
-  form.querySelector(`#address`).value = `${Math.round(y + mainPin.offsetWidth / 2)}, ${Math.round(x + xOffset)}`;
+  form.querySelector(`#address`).value = `${Math.round(x + xOffset)}, ${Math.round(y + yOffset)}`;
 };
 const map = document.querySelector(`.map`);
 const mainPin = map.querySelector(`.map__pin--main`);
@@ -40,23 +44,22 @@ mainPin.addEventListener(`mousedown`, (evt) => {
       y: moveEvt.clientY
     };
 
-    let coordY = mainPin.offsetLeft - shift.x;
-    let coordX = mainPin.offsetTop - shift.y;
-
-    if (coordY < coordLimits.minY) {
-      coordY = coordLimits.minY;
-    } else if (coordY > map.offsetWidth - mainPin.offsetWidth) {
-      coordY = map.offsetWidth - mainPin.offsetWidth;
+    let coordX = mainPin.offsetLeft - shift.x;
+    let coordY = mainPin.offsetTop - shift.y;
+    if (coordY < coordLimits.minY - mainPin.offsetHeight - PIN_TAIL) {
+      coordY = coordLimits.minY - mainPin.offsetHeight - PIN_TAIL;
+    } else if (coordY > coordLimits.maxY - mainPin.offsetHeight - PIN_TAIL) {
+      coordY = coordLimits.maxY - mainPin.offsetHeight - PIN_TAIL;
     }
 
-    if (coordX < coordLimits.minX) {
-      coordX = coordLimits.minX;
-    } else if (coordX > coordLimits.maxX) {
-      coordX = coordLimits.maxX;
+    if (coordX < coordLimits.minX - mainPin.offsetWidth / 2) {
+      coordX = coordLimits.minX - mainPin.offsetWidth / 2;
+    } else if (coordX > map.offsetWidth - mainPin.offsetWidth / 2) {
+      coordX = map.offsetWidth - mainPin.offsetWidth / 2;
     }
 
-    mainPin.style.left = coordY + `px`;
-    mainPin.style.top = coordX + `px`;
+    mainPin.style.left = coordX + `px`;
+    mainPin.style.top = coordY + `px`;
 
     fillAddressValue(coordX, coordY, true);
   };

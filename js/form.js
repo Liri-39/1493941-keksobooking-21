@@ -73,9 +73,9 @@ setDisableOptions();
 
 const removePins = () => {
   const pins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
-  for (let i = 0; i < pins.length; i++) {
-    pins[i].remove();
-  }
+  pins.forEach((pin) => {
+    pin.remove();
+  });
 };
 
 // деактивация
@@ -109,8 +109,14 @@ const formDeactivateHandler = () => {
   preview.src = previewDefaultSrc;
 };
 
+const formActivateHandler = (evt) => {
+  if (evt.button === 0 || window.page.Keys.isEnter(evt)) {
+    activate();
+  }
+};
+
 // активация
-const formActivateHandler = () => {
+const activate = () => {
   window.move.fillAddressValue(startCoords.x, startCoords.y, true);
   map.classList.remove(`map--faded`);
   form.classList.remove(`ad-form--disabled`);
@@ -131,6 +137,8 @@ const formActivateHandler = () => {
   fileChooser.addEventListener(`change`, avatarChooserHandler);
   photoChooser.addEventListener(`change`, photoChooserHandler);
   resetButton.addEventListener(`click`, formDeactivateHandler);
+  mainPin.removeEventListener(`mousedown`, window.form.formActivateHandler);
+  mainPin.removeEventListener(`keydown`, window.form.formActivateHandler);
 };
 
 const onError = () => {

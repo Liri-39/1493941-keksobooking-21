@@ -8,7 +8,7 @@ const pinTemplate = document.querySelector(`#pin`)
   .querySelector(`.map__pin`);
 
 
-const renderPin = (pin) => {
+const renderElement = (pin) => {
   const pinElement = pinTemplate.cloneNode(true);
   const location = pin.location;
   const locationX = location.x - PIN_WIDTH / 2;
@@ -21,5 +21,5 @@ const renderPin = (pin) => {
   return pinElement;
 };
 window.pins = {
-  renderPin
+  renderElement
 };

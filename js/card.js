@@ -1,6 +1,6 @@
 'use strict';
 
-const renderCard = (card) => {
+const renderElement = (card) => {
   const CARD_PHOTO_WIDTH = 45;
   const CARD_PHOTO_HEIGHT = 40;
   const cardTemplate = document.querySelector(`#card`)
@@ -47,5 +47,5 @@ const renderCard = (card) => {
   return cardElement;
 };
 window.card = {
-  renderCard
+  renderElement
 };

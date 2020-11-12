@@ -5,14 +5,5 @@ const mainPin = map.querySelector(`.map__pin--main`);
 
 window.form.formDeactivateHandler();
 
-mainPin.addEventListener(`mousedown`, (evt) => {
-  if (evt.button === 0) {
-    window.form.formActivateHandler();
-  }
-
-});
-mainPin.addEventListener(`keydown`, (evt) => {
-  if (window.page.Keys.isEnter(evt)) {
-    window.form.formActivateHandler();
-  }
-});
+mainPin.addEventListener(`mousedown`, window.form.formActivateHandler);
+mainPin.addEventListener(`keydown`, window.form.formActivateHandler);
